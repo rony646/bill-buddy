@@ -1,3 +1,4 @@
+import 'package:bill_buddy/widgets/bill_card.dart';
 import 'package:bill_buddy/widgets/items_filter.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 231, 231, 231),
         appBar: AppBar(
           toolbarHeight: 100,
           flexibleSpace: Container(
@@ -40,7 +42,12 @@ class Home extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [ItemsFilter(), Text('Content')],
+            children: [
+              ItemsFilter(),
+              Column(
+                children: [BillCard(), BillCard()],
+              )
+            ],
           ),
         ));
   }
