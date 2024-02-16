@@ -38,14 +38,18 @@ class Home extends StatelessWidget {
             ]),
           ),
         ),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ItemsFilter(),
+              const ItemsFilter(),
               Column(
-                children: [BillCard(), BillCard()],
+                children: [
+                  BillCard('Conta de luz', DateTime(2024, 2, 19)),
+                  BillCard('Curso', DateTime(2024, 2, 25)),
+                  BillCard('Mercado', DateTime.now())
+                ],
               )
             ],
           ),
