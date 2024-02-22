@@ -1,5 +1,7 @@
+import 'package:bill_buddy/screens/create_bill.dart';
 import 'package:bill_buddy/screens/home.dart';
 import 'package:bill_buddy/themes/main_theme.dart';
+import 'package:bill_buddy/utils/routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +16,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: mainTheme,
-      home: const Home(),
+      initialRoute: Routes.home,
+      routes: {
+        Routes.home: (context) => const Home(),
+        Routes.create: (context) => const CreateBill(),
+      },
     );
   }
 }

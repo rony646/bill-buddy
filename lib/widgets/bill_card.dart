@@ -2,18 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BillCard extends StatelessWidget {
-  /*
-
-    To do:
-      - Add status color logic
-      - Receive bill value via parameter
-
-  */
-
   final String title;
   final DateTime dueDate;
+  final double billValue;
 
-  const BillCard(this.title, this.dueDate, {super.key});
+  const BillCard(this.title, this.dueDate, this.billValue, {super.key});
 
   String _getDaysToDueText() {
     final today = DateTime.now();
@@ -32,6 +25,12 @@ class BillCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color dueColor = const Color(0xFF2BC936);
+
+    if (dueDate.difference(DateTime.now()).inDays == 0) {
+      dueColor = const Color(0xFFF44336);
+    }
+
     return Container(
       height: 140,
       width: double.infinity,
@@ -49,13 +48,13 @@ class BillCard extends StatelessWidget {
         ],
       ),
       child: Row(children: [
-        const SizedBox(
+        SizedBox(
           height: 120,
           width: 11,
           child: DecoratedBox(
               decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-            color: Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            color: dueColor,
           )),
         ),
         Container(
@@ -82,9 +81,10 @@ class BillCard extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 )
               ]),
-              const Text(
-                '\$150',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+              Text(
+                '\$${billValue.toStringAsFixed(2)}',
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
               ),
             ],
           ),

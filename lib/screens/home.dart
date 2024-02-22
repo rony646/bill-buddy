@@ -8,7 +8,20 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 231, 231, 231),
+        backgroundColor: const Color.fromARGB(255, 231, 231, 231),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            print('Navegar aqui');
+          },
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: const Color(0xFFFFFFFF),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(50),
+            ),
+          ),
+          child: const Icon(Icons.add, size: 35),
+        ),
         appBar: AppBar(
           toolbarHeight: 100,
           flexibleSpace: Container(
@@ -46,9 +59,16 @@ class Home extends StatelessWidget {
               const ItemsFilter(),
               Column(
                 children: [
-                  BillCard('Conta de luz', DateTime(2024, 2, 19)),
-                  BillCard('Curso', DateTime(2024, 2, 25)),
-                  BillCard('Mercado', DateTime.now())
+                  BillCard(
+                      'Conta de luz',
+                      DateTime(
+                        2024,
+                        2,
+                        19,
+                      ),
+                      150.64),
+                  BillCard('Curso', DateTime(2024, 2, 25), 325.10),
+                  BillCard('Mercado', DateTime.now(), 180)
                 ],
               )
             ],
