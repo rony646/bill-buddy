@@ -1,3 +1,4 @@
+import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/widgets/bill_card.dart';
 import 'package:bill_buddy/widgets/items_filter.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class Home extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 231, 231, 231),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print('Navegar aqui');
+            Navigator.pushNamed(context, Routes.create);
           },
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: const Color(0xFFFFFFFF),
