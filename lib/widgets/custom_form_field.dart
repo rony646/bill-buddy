@@ -4,17 +4,36 @@ import 'package:flutter/services.dart';
 class CustomFormField extends StatelessWidget {
   const CustomFormField({
     super.key,
-    required this.hintText,
+    required this.controller,
+    this.hintText,
     this.inputFormatters,
     this.validator,
+    this.onTap,
+    this.customDecoration,
+    this.readOnly = false,
   });
 
-  final String hintText;
+  final String? hintText;
+  final TextEditingController controller;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
+  final Future<Null> Function()? onTap;
+  final InputDecoration? customDecoration;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField();
+    return Padding(
+        padding: const EdgeInsets.all(8),
+        child: TextFormField(
+          controller: controller,
+          readOnly: readOnly,
+          inputFormatters: inputFormatters,
+          validator: validator,
+          onTap: onTap,
+          decoration: customDecoration is InputDecoration
+              ? customDecoration
+              : InputDecoration(hintText: hintText),
+        ));
   }
 }
