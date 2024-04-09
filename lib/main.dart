@@ -1,11 +1,16 @@
+import 'package:bill_buddy/providers/BillsProvider.dart';
 import 'package:bill_buddy/screens/create_bill.dart';
 import 'package:bill_buddy/screens/home.dart';
 import 'package:bill_buddy/themes/main_theme.dart';
 import 'package:bill_buddy/utils/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => BillsProvider())],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
