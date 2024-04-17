@@ -19,27 +19,27 @@ class _ItemsFilterState extends State<ItemsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Registered bills',
+        Text('Your bills',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
             )),
-        TextButton.icon(
-          onPressed: handleFilterChange,
-          icon: Icon(
-              orderByNewest ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-              size: 24.0,
-              color: const Color(0xC5363636)),
-          label: Text(
-            orderByNewest ? 'Newest' : 'Oldest',
-            style: const TextStyle(
-              color: Color(0xC5363636),
-            ),
-          ),
-        ),
+        // TextButton.icon(
+        //   onPressed: handleFilterChange,
+        //   icon: Icon(
+        //       orderByNewest ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+        //       size: 24.0,
+        //       color: const Color(0xC5363636)),
+        //   label: Text(
+        //     orderByNewest ? 'Newest' : 'Oldest',
+        //     style: const TextStyle(
+        //       color: Color(0xC5363636),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

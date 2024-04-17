@@ -11,6 +11,7 @@ class CustomFormField extends StatelessWidget {
     this.onTap,
     this.customDecoration,
     this.readOnly = false,
+    this.numberKeyboard = false,
   });
 
   final String? hintText;
@@ -20,6 +21,7 @@ class CustomFormField extends StatelessWidget {
   final Future<Null> Function()? onTap;
   final InputDecoration? customDecoration;
   final bool readOnly;
+  final bool numberKeyboard;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,8 @@ class CustomFormField extends StatelessWidget {
           controller: controller,
           readOnly: readOnly,
           inputFormatters: inputFormatters,
+          keyboardType:
+              numberKeyboard ? TextInputType.number : TextInputType.text,
           validator: validator,
           onTap: onTap,
           decoration: customDecoration is InputDecoration

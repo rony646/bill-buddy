@@ -12,8 +12,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final billsList = Provider.of<BillsProvider>(context).bills;
 
-    print('list: $billsList');
-
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 231, 231, 231),
         floatingActionButton: FloatingActionButton(
@@ -65,18 +63,15 @@ class Home extends StatelessWidget {
             children: [
               const ItemsFilter(),
               Column(
-                children: [
-                  BillCard(
-                      'Conta de luz',
-                      DateTime(
-                        2024,
-                        2,
-                        19,
+                children: billsList
+                    .map(
+                      (bill) => BillCard(
+                        bill.title,
+                        DateTime.parse(bill.dueDate),
+                        bill.value,
                       ),
-                      150.64),
-                  BillCard('Curso', DateTime(2024, 2, 25), 325.10),
-                  BillCard('Mercado', DateTime.now(), 180)
-                ],
+                    )
+                    .toList(),
               )
             ],
           ),

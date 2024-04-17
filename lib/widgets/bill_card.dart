@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class BillCard extends StatelessWidget {
   final String title;
   final DateTime dueDate;
-  final double billValue;
+  final String billValue;
 
   const BillCard(this.title, this.dueDate, this.billValue, {super.key});
 
@@ -82,7 +82,7 @@ class BillCard extends StatelessWidget {
                 )
               ]),
               Text(
-                '\$${billValue.toStringAsFixed(2)}',
+                '\$$billValue',
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
               ),

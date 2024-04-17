@@ -3,6 +3,7 @@ import 'package:bill_buddy/providers/BillsProvider.dart';
 import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/widgets/custom_form_field.dart';
 import 'package:bill_buddy/widgets/multiple_select.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class _CreateBillState extends State<CreateBill> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateInputController = TextEditingController();
+  final TextEditingController _valueInputController = TextEditingController();
   List<int> _notifyOptions = [1];
 
   @override
@@ -40,6 +42,11 @@ class _CreateBillState extends State<CreateBill> {
                         return 'Enter a valid title';
                       }
                     },
+                  ),
+                  CustomFormField(
+                    controller: _valueInputController,
+                    hintText: 'Enter the bill value...',
+                    inputFormatters: [CurrencyTextInputFormatter.currency()],
                   ),
                   CustomFormField(
                     controller: _dateInputController,
@@ -85,16 +92,23 @@ class _CreateBillState extends State<CreateBill> {
                       if (_formKey.currentState!.validate()) {
                         String title = _titleController.text;
                         String date = _dateInputController.text;
+                        String value = _valueInputController.text.replaceAll(
+                          RegExp('USD'),
+                          '',
+                        );
 
                         Bill newBill = Bill(
                           title: title,
                           dueDate: date,
+                          value: value,
                           notificationChannels: _notifyOptions,
                         );
 
                         billsProvider.addBill(newBill);
 
-                        Navigator.of(context).pushNamed(Routes.home);
+                        Navigator.of(context).pushNamed(
+                          Routes.home,
+                        );
                       }
                     },
                     child: const Text('Submit'),
