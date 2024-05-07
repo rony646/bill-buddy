@@ -12,6 +12,7 @@ class CustomFormField extends StatelessWidget {
     this.customDecoration,
     this.readOnly = false,
     this.numberKeyboard = false,
+    this.hideText = false,
   });
 
   final String? hintText;
@@ -22,6 +23,7 @@ class CustomFormField extends StatelessWidget {
   final InputDecoration? customDecoration;
   final bool readOnly;
   final bool numberKeyboard;
+  final bool hideText;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class CustomFormField extends StatelessWidget {
         child: TextFormField(
           controller: controller,
           readOnly: readOnly,
+          obscureText: hideText,
           inputFormatters: inputFormatters,
           keyboardType:
               numberKeyboard ? TextInputType.number : TextInputType.text,
