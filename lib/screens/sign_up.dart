@@ -1,7 +1,9 @@
+import 'package:bill_buddy/models/fire_auth.dart';
+import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/utils/validate_email.dart';
 import 'package:bill_buddy/widgets/custom_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:toggle_switch/toggle_switch.dart';
 
 class SignUp extends StatefulWidget {
@@ -17,13 +19,50 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   FormType _selectedForm = FormType.login;
+  bool _loading = false;
+
+  _authenticateUser({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    setState(() {
+      _loading = true;
+    });
+
+    User? user;
+    if (_selectedForm == FormType.signUp) {
+      user = await FireAuth.signUp(
+        name: name,
+        email: email,
+        password: password,
+        context: context,
+      );
+    }
+
+    if (_selectedForm == FormType.login) {
+      user = await FireAuth.signIn(
+        email: email,
+        password: password,
+        context: context,
+      );
+    }
+
+    if (user != null) {
+      Navigator.of(context).pushNamed(
+        Routes.home,
+      );
+    }
+
+    setState(() {
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(_selectedForm);
     return Scaffold(
       body: Center(
         child: SizedBox(
@@ -78,6 +117,11 @@ class _SignUpState extends State<SignUp> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        if (_selectedForm == FormType.signUp)
+                          CustomFormField(
+                            controller: _userNameController,
+                            hintText: 'Enter your name...',
+                          ),
                         CustomFormField(
                           controller: _emailController,
                           hintText: 'Enter your e-mail...',
@@ -87,12 +131,6 @@ class _SignUpState extends State<SignUp> {
                           hideText: true,
                           hintText: 'Enter your password...',
                         ),
-                        if (_selectedForm == FormType.signUp)
-                          CustomFormField(
-                            controller: _confirmPasswordController,
-                            hideText: true,
-                            hintText: 'Confirm your password...',
-                          ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
@@ -115,11 +153,26 @@ class _SignUpState extends State<SignUp> {
                                   .showSnackBar(snackBar);
                               return;
                             }
-                            print('password: ${_passwordController.text}');
+
+                            _authenticateUser(
+                              name: _userNameController.text,
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
                           },
-                          child: Text(_selectedForm == FormType.login
-                              ? 'Login'
-                              : 'Sign up'),
+                          child: _loading
+                              ? const SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  _selectedForm == FormType.login
+                                      ? 'Login'
+                                      : 'Sign up',
+                                ),
                         )
                       ],
                     ),

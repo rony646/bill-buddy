@@ -28,6 +28,7 @@ class Home extends StatelessWidget {
           child: const Icon(Icons.add, size: 35),
         ),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           toolbarHeight: 100,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
