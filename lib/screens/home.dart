@@ -1,16 +1,24 @@
+import 'package:bill_buddy/models/fire_auth.dart';
 import 'package:bill_buddy/providers/BillsProvider.dart';
 import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/widgets/bill_card.dart';
 import 'package:bill_buddy/widgets/items_filter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
+  void handleLogout(BuildContext context) {
+    FireAuth.signOut();
+    Navigator.of(context).pushNamed(Routes.sign_up);
+  }
+
   @override
   Widget build(BuildContext context) {
     final billsList = Provider.of<BillsProvider>(context).bills;
+    final User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 231, 231, 231),
@@ -50,10 +58,34 @@ class Home extends StatelessWidget {
                 'BillBuddy',
                 style: TextStyle(fontSize: 25),
               )),
-              CircleAvatar(
-                backgroundColor: Theme.of(context).disabledColor,
-                child: const Text('RP', style: TextStyle(fontSize: 16)),
-              )
+              TextButton(
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamed(Routes.sign_up);
+                  },
+                  child: Text('exit')),
+              PopupMenuButton<Widget>(
+                offset: const Offset(0, 45),
+                child: CircleAvatar(
+                  backgroundColor: Theme.of(context).disabledColor,
+                  child: Text(
+                    '${user!.displayName?[0]}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<Widget>>[
+                  PopupMenuItem<Widget>(
+                    child: TextButton(
+                      onPressed: () => handleLogout(context),
+                      child: Text(
+                        'Exit',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ]),
           ),
         ),

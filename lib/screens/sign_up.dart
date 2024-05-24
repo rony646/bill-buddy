@@ -27,14 +27,14 @@ class _SignUpState extends State<SignUp> {
     required String name,
     required String email,
     required String password,
+    required BuildContext context,
   }) async {
     setState(() {
       _loading = true;
     });
 
-    User? user;
     if (_selectedForm == FormType.signUp) {
-      user = await FireAuth.signUp(
+      await FireAuth.signUp(
         name: name,
         email: email,
         password: password,
@@ -42,15 +42,15 @@ class _SignUpState extends State<SignUp> {
       );
     }
 
-    if (_selectedForm == FormType.login) {
-      user = await FireAuth.signIn(
+    if (_selectedForm == FormType.login && context.mounted) {
+      await FireAuth.signIn(
         email: email,
         password: password,
         context: context,
       );
     }
 
-    if (user != null) {
+    if (context.mounted && FirebaseAuth.instance.currentUser?.uid != null) {
       Navigator.of(context).pushNamed(
         Routes.home,
       );
@@ -158,6 +158,7 @@ class _SignUpState extends State<SignUp> {
                               name: _userNameController.text,
                               email: _emailController.text,
                               password: _passwordController.text,
+                              context: context,
                             );
                           },
                           child: _loading

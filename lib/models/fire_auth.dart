@@ -1,17 +1,18 @@
+import 'package:bill_buddy/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FireAuth {
-  static Future<User?> signUp({
+  static Future<void> signUp({
     required String name,
     required String email,
     required String password,
     required BuildContext context,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
 
     try {
+      User? user;
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -20,7 +21,6 @@ class FireAuth {
       user = userCredential.user;
       await user!.updateDisplayName(name);
       await user.reload();
-      user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password' && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -49,27 +49,21 @@ class FireAuth {
         );
       }
     }
-
-    return user;
   }
 
-  static Future<User?> signIn({
+  static Future<void> signIn({
     required String email,
     required String password,
     required BuildContext context,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
 
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      print(e.code);
       if (e.code == 'user-not-found' && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -86,7 +80,11 @@ class FireAuth {
         );
       }
     }
+  }
 
-    return user;
+  static Future<void> signOut() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    await auth.signOut();
   }
 }

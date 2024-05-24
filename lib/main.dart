@@ -17,7 +17,11 @@ Future main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => BillsProvider())],
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => BillsProvider(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
