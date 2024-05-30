@@ -58,12 +58,6 @@ class Home extends StatelessWidget {
                 'BillBuddy',
                 style: TextStyle(fontSize: 25),
               )),
-              TextButton(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pushNamed(Routes.sign_up);
-                  },
-                  child: Text('exit')),
               PopupMenuButton<Widget>(
                 offset: const Offset(0, 45),
                 child: CircleAvatar(

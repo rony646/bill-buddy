@@ -1,8 +1,4 @@
-import 'package:bill_buddy/models/fire_auth.dart';
-import 'package:bill_buddy/utils/routes.dart';
-import 'package:bill_buddy/utils/validate_email.dart';
-import 'package:bill_buddy/widgets/custom_form_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bill_buddy/widgets/auth_form.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -16,48 +12,24 @@ class SignUp extends StatefulWidget {
 enum FormType { login, signUp }
 
 class _SignUpState extends State<SignUp> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _userNameController = TextEditingController();
   FormType _selectedForm = FormType.login;
-  bool _loading = false;
 
-  _authenticateUser({
-    required String name,
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    setState(() {
-      _loading = true;
-    });
+  @override
+  void initState() {
+    super.initState();
+  }
 
-    if (_selectedForm == FormType.signUp) {
-      await FireAuth.signUp(
-        name: name,
-        email: email,
-        password: password,
-        context: context,
-      );
-    }
+  void _handleChangeFormType(int? option) {
+    if (option == 0) {
+      setState(() {
+        _selectedForm = FormType.login;
+      });
 
-    if (_selectedForm == FormType.login && context.mounted) {
-      await FireAuth.signIn(
-        email: email,
-        password: password,
-        context: context,
-      );
-    }
-
-    if (context.mounted && FirebaseAuth.instance.currentUser?.uid != null) {
-      Navigator.of(context).pushNamed(
-        Routes.home,
-      );
+      return;
     }
 
     setState(() {
-      _loading = false;
+      _selectedForm = FormType.signUp;
     });
   }
 
@@ -96,88 +68,12 @@ class _SignUpState extends State<SignUp> {
                     totalSwitches: 2,
                     labels: const ['Login', 'Sign Up'],
                     icons: const [Icons.login, Icons.app_registration_outlined],
-                    onToggle: (index) {
-                      if (index == 0) {
-                        setState(() {
-                          _selectedForm = FormType.login;
-                        });
-
-                        return;
-                      }
-
-                      setState(() {
-                        _selectedForm = FormType.signUp;
-                      });
-                    },
+                    onToggle: (index) => _handleChangeFormType(index),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        if (_selectedForm == FormType.signUp)
-                          CustomFormField(
-                            controller: _userNameController,
-                            hintText: 'Enter your name...',
-                          ),
-                        CustomFormField(
-                          controller: _emailController,
-                          hintText: 'Enter your e-mail...',
-                        ),
-                        CustomFormField(
-                          controller: _passwordController,
-                          hideText: true,
-                          hintText: 'Enter your password...',
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            if (!isEmailValid(_emailController.text)) {
-                              const snackBar = SnackBar(
-                                backgroundColor:
-                                    Color.fromARGB(210, 237, 64, 52),
-                                content: Text(
-                                  'Invalid e-mail address',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              );
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                              return;
-                            }
-
-                            _authenticateUser(
-                              name: _userNameController.text,
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                              context: context,
-                            );
-                          },
-                          child: _loading
-                              ? const SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : Text(
-                                  _selectedForm == FormType.login
-                                      ? 'Login'
-                                      : 'Sign up',
-                                ),
-                        )
-                      ],
-                    ),
-                  ),
+                  child: AuthForm(selectedForm: _selectedForm),
                 ),
               ],
             ),

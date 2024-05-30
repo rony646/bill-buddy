@@ -1,4 +1,5 @@
-import 'package:bill_buddy/utils/routes.dart';
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -86,5 +87,15 @@ class FireAuth {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     await auth.signOut();
+  }
+
+  static bool checkIfUserIsLoggedIn() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    if (auth.currentUser != null) {
+      return true;
+    }
+
+    return false;
   }
 }

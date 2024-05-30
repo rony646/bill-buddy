@@ -1,3 +1,4 @@
+import 'package:bill_buddy/models/fire_auth.dart';
 import 'package:bill_buddy/providers/BillsProvider.dart';
 import 'package:bill_buddy/screens/create_bill.dart';
 import 'package:bill_buddy/screens/home.dart';
@@ -27,14 +28,20 @@ Future main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: mainTheme,
-      initialRoute: Routes.sign_up,
+      initialRoute:
+          FireAuth.checkIfUserIsLoggedIn() ? Routes.home : Routes.sign_up,
       routes: {
         Routes.sign_up: (context) => const SignUp(),
         Routes.home: (context) => const Home(),
