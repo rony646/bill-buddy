@@ -104,7 +104,7 @@ class _CreateBillState extends State<CreateBill> {
                           notificationChannels: _notifyOptions,
                         );
 
-                        billsProvider.addBill(newBill);
+                        billsProvider.addBill(newBill, context);
 
                         Navigator.of(context).pushNamed(
                           Routes.home,
