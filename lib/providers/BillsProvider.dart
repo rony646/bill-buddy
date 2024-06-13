@@ -18,8 +18,9 @@ class BillsProvider with ChangeNotifier {
 
     if (_user != null) {
       try {
+        final uid = _user.uid;
         DatabaseReference billRef =
-            FirebaseDatabase.instance.ref('bills').push();
+            FirebaseDatabase.instance.ref('bills/$uid').push();
 
         await billRef.set({
           'title': newBill.title,
