@@ -7,17 +7,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   void handleLogout(BuildContext context) {
     FireAuth.signOut();
     Navigator.of(context).pushNamed(Routes.sign_up);
   }
 
   @override
+  void initState() {
+    super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<BillsProvider>(context, listen: false).getUserBills(uid);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final billsList = Provider.of<BillsProvider>(context).bills;
+    // Provider.of<BillsProvider>(context).getUserBills();
     final User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(

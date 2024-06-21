@@ -3,30 +3,56 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+List<Bill> parseBills(Map<String, dynamic> data) {
+  return data.entries.map((entry) {
+    final dynamic value = entry.value;
+    return Bill(
+      title: value['title'] ?? '',
+      notificationChannels:
+          (value['notificationChannels'] as List<dynamic>).cast<int>(),
+      dueDate: value['dueDate'] ?? '',
+      value: value['value'] ?? '',
+    );
+  }).toList();
+}
+
 class BillsProvider with ChangeNotifier {
   List<Bill> _bills = [];
-
   List<Bill> get bills => [..._bills];
 
-  final User? _user = FirebaseAuth.instance.currentUser;
+  Future<void> getUserBills(String? uid) async {
+    if (uid != null) {
+      DatabaseReference billsRef = FirebaseDatabase.instance.ref('bills/$uid');
+      final snapshot = await billsRef.get();
+
+      if (snapshot.exists) {
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+        final list = parseBills(data);
+
+        _bills = [...list];
+        notifyListeners();
+      }
+    }
+  }
 
   Future<void> addBill(
     Bill newBill,
     BuildContext context,
+    String? uid,
   ) async {
     _bills.add(newBill);
 
-    if (_user != null) {
+    if (uid != null) {
       try {
-        final uid = _user.uid;
-        DatabaseReference billRef =
+        DatabaseReference billsRef =
             FirebaseDatabase.instance.ref('bills/$uid').push();
 
-        await billRef.set({
+        await billsRef.set({
           'title': newBill.title,
           'dueDate': newBill.dueDate,
           'value': newBill.value,
           'notificationChannels': newBill.notificationChannels,
+          'phoneToNotify': newBill.phoneToNotify,
         });
       } catch (error) {
         if (context.mounted) {
