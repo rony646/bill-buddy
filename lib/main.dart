@@ -1,5 +1,6 @@
 import 'package:bill_buddy/models/fire_auth.dart';
 import 'package:bill_buddy/providers/BillsProvider.dart';
+import 'package:bill_buddy/providers/UserDataProvider.dart';
 import 'package:bill_buddy/screens/create_bill.dart';
 import 'package:bill_buddy/screens/home.dart';
 import 'package:bill_buddy/screens/sign_up.dart';
@@ -22,6 +23,9 @@ Future main() async {
         ChangeNotifierProvider(
           create: (_) => BillsProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => UserDataProvider(),
+        )
       ],
       child: const MyApp(),
     ),

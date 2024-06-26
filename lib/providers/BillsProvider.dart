@@ -39,6 +39,7 @@ class BillsProvider with ChangeNotifier {
     Bill newBill,
     BuildContext context,
     String? uid,
+    String? phoneNumber,
   ) async {
     _bills.add(newBill);
 
@@ -46,13 +47,17 @@ class BillsProvider with ChangeNotifier {
       try {
         DatabaseReference billsRef =
             FirebaseDatabase.instance.ref('bills/$uid').push();
+        DatabaseReference userDataRef =
+            FirebaseDatabase.instance.ref('userData/$uid').push();
 
         await billsRef.set({
           'title': newBill.title,
           'dueDate': newBill.dueDate,
           'value': newBill.value,
           'notificationChannels': newBill.notificationChannels,
-          'phoneToNotify': newBill.phoneToNotify,
+        });
+        await userDataRef.set({
+          'phoneNumber': phoneNumber,
         });
       } catch (error) {
         if (context.mounted) {

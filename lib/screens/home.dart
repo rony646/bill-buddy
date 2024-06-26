@@ -1,5 +1,7 @@
 import 'package:bill_buddy/models/fire_auth.dart';
+import 'package:bill_buddy/models/user_data.dart';
 import 'package:bill_buddy/providers/BillsProvider.dart';
+import 'package:bill_buddy/providers/UserDataProvider.dart';
 import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/widgets/bill_card.dart';
 import 'package:bill_buddy/widgets/items_filter.dart';
@@ -17,7 +19,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   void handleLogout(BuildContext context) {
     FireAuth.signOut();
-    Navigator.of(context).pushNamed(Routes.sign_up);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(Routes.sign_up, (route) => false);
   }
 
   @override

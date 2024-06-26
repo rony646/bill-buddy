@@ -1,5 +1,6 @@
 import 'package:bill_buddy/models/bill.dart';
 import 'package:bill_buddy/providers/BillsProvider.dart';
+import 'package:bill_buddy/providers/UserDataProvider.dart';
 import 'package:bill_buddy/utils/routes.dart';
 import 'package:bill_buddy/widgets/custom_form_field.dart';
 import 'package:bill_buddy/widgets/multiple_select.dart';
@@ -22,12 +23,30 @@ class _CreateBillState extends State<CreateBill> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateInputController = TextEditingController();
   final TextEditingController _valueInputController = TextEditingController();
-  final TextEditingController _phoneNumberIputController =
+  final TextEditingController _phoneNumberInputController =
       TextEditingController();
   List<int> _notifyOptions = [1];
 
   @override
+  void initState() {
+    super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<UserDataProvider>(context, listen: false).getUserData(uid);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userPhoneNumber =
+        Provider.of<UserDataProvider>(context).userData?.phoneNumber;
+
+    print('phone from screen: $userPhoneNumber');
+
+    if (userPhoneNumber != null) {
+      _phoneNumberInputController.text = userPhoneNumber;
+    }
+
     return Consumer<BillsProvider>(
       builder: (context, billsProvider, child) {
         return Scaffold(
@@ -91,32 +110,33 @@ class _CreateBillState extends State<CreateBill> {
                       });
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: IntlPhoneField(
-                      decoration: const InputDecoration(
-                        labelText: 'Your WhatsApp number',
-                        border: OutlineInputBorder(),
+                  if (userPhoneNumber == null)
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: IntlPhoneField(
+                        decoration: const InputDecoration(
+                          labelText: 'Your WhatsApp number',
+                          border: OutlineInputBorder(),
+                        ),
+                        initialCountryCode: 'BR',
+                        onChanged: (phone) {
+                          setState(() {
+                            _phoneNumberInputController.text =
+                                phone.completeNumber;
+                          });
+                        },
                       ),
-                      initialCountryCode: 'BR',
-                      onChanged: (phone) {
-                        setState(() {
-                          _phoneNumberIputController.text =
-                              phone.completeNumber;
-                        });
-                      },
                     ),
-                  ),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         String title = _titleController.text;
                         String date = _dateInputController.text;
                         String value = _valueInputController.text.replaceAll(
-                          RegExp('USD'),
+                          RegExp(r'[^0-9.]'), // Apenas números e ponto
                           '',
                         );
-                        String? phoneNumber = _phoneNumberIputController.text;
+                        String? phoneNumber = _phoneNumberInputController.text;
                         final uid = FirebaseAuth.instance.currentUser?.uid;
 
                         Bill newBill = Bill(
@@ -124,10 +144,10 @@ class _CreateBillState extends State<CreateBill> {
                           dueDate: date,
                           value: value,
                           notificationChannels: _notifyOptions,
-                          phoneToNotify: phoneNumber,
                         );
 
-                        billsProvider.addBill(newBill, context, uid);
+                        billsProvider.addBill(
+                            newBill, context, uid, phoneNumber);
 
                         Navigator.of(context).pushNamed(
                           Routes.home,
