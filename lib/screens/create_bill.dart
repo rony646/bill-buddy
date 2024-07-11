@@ -26,6 +26,7 @@ class _CreateBillState extends State<CreateBill> {
   final TextEditingController _phoneNumberInputController =
       TextEditingController();
   List<int> _notifyOptions = [1];
+  String? phoneNumber;
 
   @override
   void initState() {
@@ -41,11 +42,17 @@ class _CreateBillState extends State<CreateBill> {
     final userPhoneNumber =
         Provider.of<UserDataProvider>(context).userData?.phoneNumber;
 
-    print('phone from screen: $userPhoneNumber');
-
     if (userPhoneNumber != null) {
-      _phoneNumberInputController.text = userPhoneNumber;
+      setState(() {
+        phoneNumber = userPhoneNumber;
+      });
+    } else {
+      setState(() {
+        phoneNumber = null;
+      });
     }
+
+    print('phone updated: $phoneNumber');
 
     return Consumer<BillsProvider>(
       builder: (context, billsProvider, child) {
@@ -110,7 +117,7 @@ class _CreateBillState extends State<CreateBill> {
                       });
                     },
                   ),
-                  if (userPhoneNumber == null)
+                  if (phoneNumber == null)
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: IntlPhoneField(

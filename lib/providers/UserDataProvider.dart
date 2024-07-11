@@ -18,19 +18,21 @@ class UserDataProvider with ChangeNotifier {
 
   Future<void> getUserData(String? uid) async {
     if (uid != null) {
-      print('chamou: $uid');
       DatabaseReference userDataRef =
           FirebaseDatabase.instance.ref('userData/$uid');
       final snapshot = await userDataRef.get();
 
       if (snapshot.exists) {
         final data = Map<String, dynamic>.from(snapshot.value as Map);
-        print('data from provider: $data');
         final userData = parseUserData(data);
 
         _userData = userData;
         notifyListeners();
+        return;
       }
+
+      _userData = null;
+      notifyListeners();
     }
   }
 }
