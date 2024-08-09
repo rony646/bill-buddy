@@ -107,16 +107,19 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const ItemsFilter(),
-              Column(
-                children: billsList
-                    .map(
-                      (bill) => BillCard(
-                        bill.title,
-                        DateTime.parse(bill.dueDate),
-                        bill.value,
-                      ),
-                    )
-                    .toList(),
+              Expanded(
+                child: ListView(
+                  reverse: true,
+                  children: billsList
+                      .map(
+                        (bill) => BillCard(
+                          bill.title,
+                          DateTime.parse(bill.dueDate),
+                          bill.value,
+                        ),
+                      )
+                      .toList(),
+                ),
               )
             ],
           ),
