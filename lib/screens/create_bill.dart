@@ -172,28 +172,29 @@ class _CreateBillState extends State<CreateBill> {
                       });
                     },
                   ),
-                  if (phoneNumber == null)
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: IntlPhoneField(
-                        decoration: const InputDecoration(
-                          labelText: 'Your WhatsApp number',
-                          border: OutlineInputBorder(),
-                        ),
-                        initialCountryCode: 'BR',
-                        onChanged: (phone) {
-                          setState(() {
-                            _phoneNumberInputController.text =
-                                phone.completeNumber;
-                          });
-                        },
-                      ),
-                    ),
+                  // if (phoneNumber == null)
+                  //   Padding(
+                  //     padding: const EdgeInsets.all(8),
+                  //     child: IntlPhoneField(
+                  //       decoration: const InputDecoration(
+                  //         labelText: 'Your WhatsApp number',
+                  //         border: OutlineInputBorder(),
+                  //       ),
+                  //       initialCountryCode: 'BR',
+                  //       onChanged: (phone) {
+                  //         setState(() {
+                  //           _phoneNumberInputController.text =
+                  //               phone.completeNumber;
+                  //         });
+                  //       },k
+                  //     ),
+                  //   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         String title = _titleController.text;
                         String date = _dateInputController.text;
+                        String? defaultDate;
                         String value = _valueInputController.text.replaceAll(
                           RegExp(r'[^0-9.]'), // Apenas números e ponto
                           '',
@@ -201,9 +202,17 @@ class _CreateBillState extends State<CreateBill> {
                         String? phoneNumber = _phoneNumberInputController.text;
                         final uid = FirebaseAuth.instance.currentUser?.uid;
 
+                        print('data limpa: $date');
+                        if (date == '') {
+                          var date = DateTime(DateTime.now().year, 1, 1);
+                          var formatedDate =
+                              DateFormat('yyyy-MM-dd').format(date);
+                          defaultDate = formatedDate;
+                        }
+
                         Bill newBill = Bill(
                           title: title,
-                          dueDate: date,
+                          dueDate: defaultDate ?? date,
                           value: value,
                           notificationChannels: _notifyOptions,
                         );

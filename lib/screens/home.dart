@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final billsList = Provider.of<BillsProvider>(context).bills;
-    // Provider.of<BillsProvider>(context).getUserBills();
+    final billsProvider = Provider.of<BillsProvider>(context);
     final User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -112,10 +112,46 @@ class _HomeState extends State<Home> {
                   reverse: true,
                   children: billsList
                       .map(
-                        (bill) => BillCard(
-                          bill.title,
-                          DateTime.parse(bill.dueDate),
-                          bill.value,
+                        (bill) => Dismissible(
+                          key: Key(bill.id as String),
+                          confirmDismiss: (DismissDirection direction) async {
+                            final uid = FirebaseAuth.instance.currentUser?.uid;
+
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text(
+                                    'Are you sure you want to delete the bill?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: const Text('Yes'),
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                            if (confirmed == true) {
+                              // ignore: use_build_context_synchronously
+                              billsProvider.removeBill(
+                                  context, bill.id as String, uid, bill);
+                            }
+                            return confirmed;
+                          },
+                          direction: DismissDirection.endToStart,
+                          child: BillCard(
+                            bill.title,
+                            DateTime.parse(bill.dueDate),
+                            bill.value,
+                          ),
                         ),
                       )
                       .toList(),

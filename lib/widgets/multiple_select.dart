@@ -11,8 +11,8 @@ class MultipleSelect extends StatelessWidget {
   final String title;
   final List<S2Choice<int>> options = [
     S2Choice<int>(value: 1, title: 'App Notification'),
-    S2Choice<int>(value: 2, title: 'WhatsApp'),
-    S2Choice<int>(value: 3, title: 'Telegram'),
+    // S2Choice<int>(value: 2, title: 'WhatsApp'),
+    // S2Choice<int>(value: 3, title: 'Telegram'),
   ];
   final Null Function(List<int>) onSelect;
   final List<int> defaultOptions;

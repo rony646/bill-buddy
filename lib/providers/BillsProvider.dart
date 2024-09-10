@@ -7,6 +7,7 @@ List<Bill> parseBills(Map<String, dynamic> data) {
   return data.entries.map((entry) {
     final dynamic value = entry.value;
     return Bill(
+      id: entry.key,
       title: value['title'] ?? '',
       notificationChannels:
           (value['notificationChannels'] as List<dynamic>).cast<int>(),
@@ -32,6 +33,38 @@ class BillsProvider with ChangeNotifier {
         _bills = [...list];
         notifyListeners();
       }
+    }
+  }
+
+  Future<void> removeBill(
+    BuildContext context,
+    String id,
+    String? uid,
+    Bill bill,
+  ) async {
+    if (uid != null) {
+      try {
+        // Remove o .push() porque estamos removendo uma referência existente
+        DatabaseReference billRef =
+            FirebaseDatabase.instance.ref('bills/$uid/$id');
+
+        await billRef.remove();
+      } catch (error) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              content: const Text(
+                  'There was an error while deleting your data.'), // Corrigida a mensagem
+            ),
+          );
+        }
+
+        _bills.remove(
+            bill); // Assumindo que _bills está acessível no escopo correto
+      }
+
+      notifyListeners();
     }
   }
 
